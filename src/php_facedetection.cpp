@@ -1,3 +1,24 @@
+/*
+ * php_facedetection.cpp
+ * 
+ * Copyright (c) 2012 Francisco de Souza Júnior <fsjunior at gmail.com>. 
+ * 
+ * This file is part of FaceDetectionForPHP.
+ * 
+ * FaceDetectionForPHP is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * FaceDetectionForPHP is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with FaceDetectionForPHP.  If not, see <http ://www.gnu.org/licenses/>.
+ */
+
 #include "php_facedetection.h"
 #include "facedetector.h"
 #include <opencv2/highgui/highgui.hpp>
@@ -113,6 +134,7 @@ PHP_FUNCTION(fd_detect_draw)
         RETURN_BOOL(false);
     }
     
+    //TODO: correct the concatenation (need verify if dir have slash)
     fpfilein = string(INI_STR(FILE_IN_DIR)) + string(filein);
     
     img = imread(fpfilein.c_str());
@@ -124,6 +146,7 @@ PHP_FUNCTION(fd_detect_draw)
         cv::rectangle(img, *object, cv::Scalar(0, 255, 0));
     }
     
+    //TODO: correct the concatenation (need verify if dir have slash)
     fpfileout = string(INI_STR(FILE_OUT_DIR)) + string(fileout);
 
     imwrite(fpfileout.c_str(), img);

@@ -45,6 +45,8 @@ PHP_FUNCTION(fd_cascade_loaded);
 #define CASCADE_INI_CONFIG "facedetection.cascade"
 #define FILE_IN_DIR "facedetection.file_in_dir"
 #define FILE_OUT_DIR "facedetection.file_out_dir"
+
+
 PHP_INI_MH(on_cascade_change);
 
 /* Function List*/

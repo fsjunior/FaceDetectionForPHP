@@ -58,7 +58,7 @@ int FaceDetector::detect(Mat &img, vector<Rect> &objects)
         return -1;
     if(pClassifier.empty())
         return -2;
-
+    
     /* Resize image if needed */
 
     /* if(img.cols > 500 || img.rows > 500) {

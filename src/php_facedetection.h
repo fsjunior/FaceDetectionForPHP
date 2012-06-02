@@ -31,15 +31,8 @@
 
 #include "php.h"
 
-//PHP_FUNCTION(face_detect_draw);
-//PHP_FUNCTION(face_detect);
-
 
 extern zend_module_entry facedetection_module_entry;
-
-//#define phpext_chicofd_ptr &chicofd_module_entry;
-
-
 
 
 #endif /* PHP_FACEDETECTION_H */

@@ -10,7 +10,7 @@
 
 #include "php.h"
 
-PHP_FUNCTION(face_detect_draw);
+//PHP_FUNCTION(face_detect_draw);
 //PHP_FUNCTION(face_detect);
 
 

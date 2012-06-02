@@ -14,9 +14,14 @@
 
 class FaceDetector {
 protected:
-    cv::CascadeClassifier classifier;
+    cv::Ptr<cv::CascadeClassifier> pClassifier;   
 public:
-    FaceDetector();
+    std::string cf;
+    FaceDetector(const char *cascadefilename = NULL);
+    
+    bool setCascade(const char *cascadefilename);
+    
+    bool cascadeLoaded();
     
     int detect(cv::Mat &img, std::vector<cv::Rect> &objects);
     

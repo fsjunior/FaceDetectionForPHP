@@ -18,11 +18,14 @@
  * You should have received a copy of the GNU General Public License
  * along with FaceDetectionForPHP.  If not, see <http ://www.gnu.org/licenses/>.
  */
-
-#include "php_facedetection.h"
-#include "facedetector.h"
 #include <opencv2/highgui/highgui.hpp>
+#include "php.h"
 #include "php_ini.h"
+#include "standard/info.h"
+
+#include "facedetector.h"
+#include "php_facedetection.h"
+
 
 
 using namespace cv;
@@ -113,6 +116,12 @@ PHP_MSHUTDOWN_FUNCTION(facedetection)
 
 PHP_MINFO_FUNCTION(facedetection)
 {
+    php_info_print_table_start();
+    php_info_print_table_row(2, "Face detection support", "Enabled");
+    php_info_print_table_row(2, "Version", PHP_FACEDETECTION_EXTVER);
+    
+    php_info_print_table_end();
+    
     DISPLAY_INI_ENTRIES();
 }
 
@@ -136,8 +145,8 @@ PHP_FUNCTION(fd_detect_draw)
         RETURN_BOOL(false);
     }
     
-    //TODO: correct the concatenation (need verify if dir have slash)
-    fpfilein = string(INI_STR(FILE_IN_DIR)) + string(filein);
+    /* Always adds a slash */
+    fpfilein = string(INI_STR(FILE_IN_DIR)) + "/" + string(filein);
     
     img = imread(fpfilein.c_str());
 
@@ -148,8 +157,8 @@ PHP_FUNCTION(fd_detect_draw)
         cv::rectangle(img, *object, cv::Scalar(0, 255, 0));
     }
     
-    //TODO: correct the concatenation (need verify if dir have slash)
-    fpfileout = string(INI_STR(FILE_OUT_DIR)) + string(fileout);
+    /* Always adds a slash */
+    fpfileout = string(INI_STR(FILE_OUT_DIR)) + "/" + string(fileout);
 
     imwrite(fpfileout.c_str(), img);
     RETURN_BOOL(true);

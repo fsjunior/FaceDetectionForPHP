@@ -29,10 +29,15 @@
 #include "config.h"
 #endif 
 
-#include "php.h"
+//#include "php.h"
+
+#ifdef ZTS
+# include "TSRM.h"
+#endif
 
 
 extern zend_module_entry facedetection_module_entry;
+#define phpext_facedetection_ptr &facedetection_module_entry
 
 
 #endif /* PHP_FACEDETECTION_H */

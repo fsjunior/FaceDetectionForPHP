@@ -26,21 +26,27 @@
 #include "facedetector.h"
 #include "php_facedetection.h"
 
-
-
 using namespace cv;
+
+/* Defines */
+#define FACEDETECTION_NAMESPACE "Facedetection"
+
+#ifndef PHP_NS_FE
+#    define PHP_NS_FE ZEND_NS_FE
+#endif
 
 /* Persistent Objects*/
 FaceDetector f;
 
 
-/* Functions */
+/* module functions */
 PHP_MINIT_FUNCTION(facedetection);
 PHP_MSHUTDOWN_FUNCTION(facedetection);
 PHP_MINFO_FUNCTION(facedetection);
 
-PHP_FUNCTION(fd_detect_draw);
-PHP_FUNCTION(fd_cascade_loaded);
+/* Functions */
+PHP_FUNCTION(detect_draw);
+PHP_FUNCTION(cascade_loaded);
 
 
 
@@ -54,9 +60,9 @@ PHP_INI_MH(on_cascade_change);
 
 /* Function List*/
 static zend_function_entry facedetection_functions[] = {
-    PHP_FE(fd_detect_draw, NULL)
-    PHP_FE(fd_cascade_loaded, NULL)
-    { NULL, NULL, NULL}
+    PHP_NS_FE(FACEDETECTION_NAMESPACE, detect_draw, NULL)
+    PHP_NS_FE(FACEDETECTION_NAMESPACE, cascade_loaded, NULL)
+    {NULL, NULL, NULL}
 };
 
 /* Module Information */
@@ -85,6 +91,7 @@ extern "C" {
 
 /* Configuration Definition */
 
+/* TODO: add php.ini values as global variables to reduce computation in INI_STR macro */
 PHP_INI_BEGIN()
 PHP_INI_ENTRY(CASCADE_INI_CONFIG, "", PHP_INI_ALL, on_cascade_change)
 PHP_INI_ENTRY(FILE_IN_DIR, "", PHP_INI_ALL, NULL)
@@ -94,7 +101,7 @@ PHP_INI_END()
 PHP_INI_MH(on_cascade_change)
 {
     //zend_printf("New value: %s\n", new_value);
-    if(f.setCascade(new_value))
+    if (f.setCascade(new_value))
         return SUCCESS;
     else
         return FAILURE;
@@ -119,48 +126,46 @@ PHP_MINFO_FUNCTION(facedetection)
     php_info_print_table_start();
     php_info_print_table_row(2, "Face detection support", "Enabled");
     php_info_print_table_row(2, "Version", PHP_FACEDETECTION_EXTVER);
-    
     php_info_print_table_end();
-    
+
     DISPLAY_INI_ENTRIES();
 }
 
 /* Function Definitions */
 
-PHP_FUNCTION(fd_cascade_loaded)
+PHP_FUNCTION(cascade_loaded)
 {
     RETURN_BOOL(f.cascadeLoaded());
 }
 
-PHP_FUNCTION(fd_detect_draw)
+PHP_FUNCTION(detect_draw)
 {
     Mat img;
     std::vector<Rect> objects;
     char *filein, *fileout;
-    long fileinlen, fileoutlen;  
+    long fileinlen, fileoutlen;
     string fpfilein, fpfileout;
-    
 
-    if(zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "ss", &filein, &fileinlen, &fileout, &fileoutlen) == FAILURE) {
+
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "ss", &filein, &fileinlen, &fileout, &fileoutlen) == FAILURE)
         RETURN_BOOL(false);
-    }
-    
+
+
     /* Always adds a slash */
     fpfilein = string(INI_STR(FILE_IN_DIR)) + "/" + string(filein);
-    
+
     img = imread(fpfilein.c_str());
 
-    if(f.detect(img, objects) < 0)
+    if (f.detect(img, objects) < 0)
         RETURN_BOOL(false);
 
-    for(vector<Rect>::iterator object = objects.begin(); object != objects.end(); object++) {
+    for (vector<Rect>::iterator object = objects.begin(); object != objects.end(); object++)
         cv::rectangle(img, *object, cv::Scalar(0, 255, 0));
-    }
-    
+
+
     /* Always adds a slash */
     fpfileout = string(INI_STR(FILE_OUT_DIR)) + "/" + string(fileout);
 
-    imwrite(fpfileout.c_str(), img);
-    RETURN_BOOL(true);
+    RETURN_BOOL(imwrite(fpfileout.c_str(), img));
 }
 

@@ -55,9 +55,9 @@ bool FaceDetector::setCascade(const char *cascadefilename)
 int FaceDetector::detect(Mat &img, vector<Rect> &objects)
 {
     if(!img.data)
-        return -1;
+        return ERROR_CANNOT_OPEN_IMAGE;
     if(pClassifier.empty())
-        return -2;
+        return ERROR_CASCADE_NOT_LOADED;
     
     /* Resize image if needed */
 

@@ -26,6 +26,10 @@
 #include <opencv2/highgui/highgui.hpp>
 
 
+#define ERROR_CANNOT_OPEN_IMAGE -1
+#define ERROR_CASCADE_NOT_LOADED -2
+
+
 class FaceDetector {
 protected:
     cv::Ptr<cv::CascadeClassifier> pClassifier;   

@@ -64,7 +64,8 @@ static zend_function_entry facedetection_functions[] = {
     PHP_NS_FE(FACEDETECTION_NAMESPACE, detect_draw, NULL)
     PHP_NS_FE(FACEDETECTION_NAMESPACE, cascade_loaded, NULL)
     {
-        NULL, NULL, NULL}
+        NULL, NULL, NULL
+    }
 };
 
 /* Module Information */
@@ -159,22 +160,20 @@ PHP_FUNCTION(detect_draw)
     img = imread(fpfilein.c_str());
 
     switch (f.detect(img, objects)) {
-        case ERROR_CANNOT_OPEN_IMAGE:
-            zend_throw_exception(zend_exception_get_default(TSRMLS_C),
-                    "Cannot open the image. Maybe is an animated gif?", 0 TSRMLS_CC);
-            RETURN_BOOL(false);
-            break;
         case ERROR_CASCADE_NOT_LOADED:
             zend_throw_exception(zend_exception_get_default(TSRMLS_C),
                     "Cascade train data not loaded", 0 TSRMLS_CC);
             RETURN_BOOL(false);
             break;
+        case ERROR_CANNOT_OPEN_IMAGE:
+            zend_throw_exception(zend_exception_get_default(TSRMLS_C),
+                    "Cannot open the image", 0 TSRMLS_CC);
+            RETURN_BOOL(false);
+            break;
     }
-
 
     for (vector<Rect>::iterator object = objects.begin(); object != objects.end(); object++)
         cv::rectangle(img, *object, cv::Scalar(0, 255, 0));
-
 
     /* Always adds a slash */
     fpfileout = string(INI_STR(FILE_OUT_DIR)) + "/" + string(fileout);

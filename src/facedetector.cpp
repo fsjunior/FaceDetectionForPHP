@@ -56,16 +56,8 @@ int FaceDetector::detect(Mat &img, vector<Rect> &objects)
 {
     if(!img.data)
         return ERROR_CANNOT_OPEN_IMAGE;
-    if(pClassifier.empty())
+    if(!cascadeLoaded())
         return ERROR_CASCADE_NOT_LOADED;
-    
-    /* Resize image if needed */
-
-    /* if(img.cols > 500 || img.rows > 500) {
-        float factor = 500.0 / (float)((img.cols > img.rows)? img.cols : img.rows);
-        
-        resize(img, img, Size(factor * (float) img.cols, factor * (float) img.rows));
-    } */
 
     pClassifier->detectMultiScale(img, objects);
     return objects.size();
